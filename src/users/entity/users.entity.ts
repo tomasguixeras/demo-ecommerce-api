@@ -11,7 +11,7 @@ export enum UserRol {
   USER = 'user',
 }
 
-@Entity({ name: 'users' })
+@Entity('users')
 export class Users {
   @PrimaryGeneratedColumn()
   id: number;
