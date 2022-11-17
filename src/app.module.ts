@@ -16,7 +16,7 @@ const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME } = process.env;
       username: DB_USERNAME,
       password: DB_PASSWORD,
       database: DB_NAME,
-      entities: [__dirname + '/**/*.entity{.ts.js}'],
+      entities: ['dist/**/*.entity.js'],
       synchronize: true,
     }),
     UsersModule,
