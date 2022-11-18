@@ -17,7 +17,7 @@ const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME } = process.env;
       password: DB_PASSWORD,
       database: DB_NAME,
       entities: ['dist/**/*.entity.js'],
-      synchronize: true,
+      synchronize: false,
     }),
     UsersModule,
   ],

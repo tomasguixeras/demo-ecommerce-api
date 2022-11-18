@@ -22,8 +22,8 @@ export class Users {
   @Column({ nullable: false })
   surname: string;
 
-  @Column()
-  image: string;
+  @Column({ nullable: true })
+  image: string | null;
 
   @Column({ nullable: false, unique: true })
   email: string;
@@ -42,6 +42,6 @@ export class Users {
   })
   rol: UserRol;
 
-  @Column()
-  adress: string;
+  @Column({ nullable: true })
+  adress: string | null;
 }
