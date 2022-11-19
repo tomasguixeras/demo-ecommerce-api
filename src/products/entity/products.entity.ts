@@ -1,8 +1,11 @@
+import { Brand } from 'src/brand/entity/brand.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 export enum ProductStatus {
@@ -46,7 +49,9 @@ export class Products {
   })
   image: string | null;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamp',
+  })
   createdAt: Date;
 
   @Column({
@@ -56,9 +61,9 @@ export class Products {
   })
   status: ProductStatus;
 
-  // @ManyToOne(type => Brands)
-  // @JoinColumn()
-  // brand: Brands;
+  @ManyToOne(() => Brand, (brand) => brand.name)
+  @JoinColumn()
+  brand: Brand;
 
   // @ManyToOne(type => Categories)
   // @JoinColumn()

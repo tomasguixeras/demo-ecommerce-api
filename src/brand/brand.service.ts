@@ -1,4 +1,3 @@
-import { BrandInterface } from './interface/newbrand.interface';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -13,11 +12,14 @@ export class BrandService {
   ) {}
 
   getAllBrands() {
-    return this._brandRepository.find();
+    return this._brandRepository.find({
+      relations: ['products'],
+    });
   }
 
   getBrandByID(id: number) {
     return this._brandRepository.findOne({
+      relations: ['products'],
       where: {
         id,
       },
