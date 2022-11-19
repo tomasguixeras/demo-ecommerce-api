@@ -6,34 +6,36 @@ import { Products } from './entity/products.entity';
 
 @Injectable()
 export class ProductsService {
-    constructor(@InjectRepository(Products) private _productsService: Repository<Products>) {}
+  constructor(
+    @InjectRepository(Products) private _productsService: Repository<Products>,
+  ) {}
 
-    getAllProducts() {
-        return this._productsService.find();
-    }
+  getAllProducts() {
+    return this._productsService.find();
+  }
 
-    getProductById(id: number) {
-        return this._productsService.findOne({
-            where: {
-                id
-            }
-        });
-    }
+  getProductById(id: number) {
+    return this._productsService.findOne({
+      where: {
+        id,
+      },
+    });
+  }
 
-    createProduct(product: CreateProductDto) {
-        let newProduct = this._productsService.create(product);
-        return this._productsService.save(newProduct);
-    }
+  createProduct(product: CreateProductDto) {
+    const newProduct = this._productsService.create(product);
+    return this._productsService.save(newProduct);
+  }
 
-    updateProduct(id: number, dataProduct: Products) {
-        let updatedProduct = this._productsService.find({
-            where: {
-                id
-            }
-        });
-        if(!updatedProduct) {
-            return new HttpException('Not found', HttpStatus.NOT_FOUND)
-        }
-        return this._productsService.update(id, dataProduct);
+  updateProduct(id: number, dataProduct: Products) {
+    const updatedProduct = this._productsService.find({
+      where: {
+        id,
+      },
+    });
+    if (!updatedProduct) {
+      return new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
+    return this._productsService.update(id, dataProduct);
+  }
 }

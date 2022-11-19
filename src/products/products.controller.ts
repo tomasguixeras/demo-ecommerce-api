@@ -5,7 +5,7 @@ import { ProductsService } from './products.service';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private  readonly _productService: ProductsService) {}
+  constructor(private readonly _productService: ProductsService) {}
 
   @Get()
   getProducts() {
@@ -18,7 +18,10 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  updateProduct(@Param() { id }  : {id: number}, @Body() dataProduct: Products) {
+  updateProduct(
+    @Param() { id }: { id: number },
+    @Body() dataProduct: Products,
+  ) {
     return this._productService.updateProduct(id, dataProduct);
   }
 }

@@ -1,65 +1,70 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 export enum ProductStatus {
-    ENABLE = 'enable',
-    DISABLE = 'disable',
+  ENABLE = 'enable',
+  DISABLE = 'disable',
 }
 
 @Entity('products')
 export class Products {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({
-        nullable: false,
-        type: 'varchar',
-    })
-    model: string;
-    
-    @Column({
-        nullable: false,
-        type:'varchar',
-    })
-    description: string;
+  @Column({
+    nullable: false,
+    type: 'varchar',
+  })
+  model: string;
 
-    @Column({
-        nullable: false,
-        type:'int',
-    })
-    price: number;
+  @Column({
+    nullable: false,
+    type: 'varchar',
+  })
+  description: string;
 
-    @Column({
-        nullable: true,
-        type:'int',
-        default: 1,
-    })
-    quantity: number | null;
+  @Column({
+    nullable: false,
+    type: 'int',
+  })
+  price: number;
 
-    @Column({
-        nullable: true,
-        type:'varchar',
-    })
-    image: string | null;
+  @Column({
+    nullable: true,
+    type: 'int',
+    default: 1,
+  })
+  quantity: number | null;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @Column({
+    nullable: true,
+    type: 'varchar',
+  })
+  image: string | null;
 
-    @Column({
-        type: 'enum',
-        enum: ProductStatus,
-        default: ProductStatus.ENABLE,
-    })
-    status: ProductStatus;
+  @CreateDateColumn()
+  createdAt: Date;
 
-    // @ManyToOne(type => Brands)
-    // @JoinColumn()
-    // brand: Brands;
+  @Column({
+    type: 'enum',
+    enum: ProductStatus,
+    default: ProductStatus.ENABLE,
+  })
+  status: ProductStatus;
 
-    // @ManyToOne(type => Categories)
-    // @JoinColumn()
-    // categories: Categories;
+  // @ManyToOne(type => Brands)
+  // @JoinColumn()
+  // brand: Brands;
 
-    // @ManyToOne(type => Subcategories)
-    // @JoinColumn()
-    // subcategories: Subcategories;
+  // @ManyToOne(type => Categories)
+  // @JoinColumn()
+  // categories: Categories;
+
+  // @ManyToOne(type => Subcategories)
+  // @JoinColumn()
+  // subcategories: Subcategories;
 }
