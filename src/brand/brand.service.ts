@@ -1,4 +1,3 @@
-import { BrandInterface } from './interface/newbrand.interface';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
