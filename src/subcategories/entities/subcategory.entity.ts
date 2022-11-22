@@ -1,5 +1,5 @@
+import { Category } from 'src/category/entity/category.entity';
 import { Products } from 'src/products/entity/products.entity';
-import { Subcategory } from 'src/subcategories/entities/subcategory.entity';
 import {
   Column,
   Entity,
@@ -7,16 +7,17 @@ import {
   CreateDateColumn,
   OneToMany,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 
-export enum CategoryStatus {
+export enum SubcategoriesStatus {
   ENABLE = 'enable',
   DISABLE = 'disable',
   DELETED = 'deleted',
 }
 
-@Entity('category')
-export class Category {
+@Entity('subcategory')
+export class Subcategory {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -30,23 +31,23 @@ export class Category {
     nullable: true,
     type: 'varchar',
   })
-  image: string | null;
+  icon: string | null;
 
   @Column({
     type: 'enum',
-    enum: CategoryStatus,
-    default: CategoryStatus.ENABLE,
+    enum: SubcategoriesStatus,
+    default: SubcategoriesStatus.ENABLE,
   })
-  status: CategoryStatus;
+  status: SubcategoriesStatus;
 
   @CreateDateColumn()
   createdAt: Date;
 
-  @OneToMany(() => Products, (products) => products.category)
+  @OneToMany(() => Products, (products) => products.subcategory)
   @JoinColumn()
   products: Products[];
 
-  @OneToMany(() => Subcategory, (subcategory) => subcategory.category)
+  @ManyToOne(() => Category, (category) => category.name)
   @JoinColumn()
-  subcategory: Subcategory[];
+  category: Category;
 }

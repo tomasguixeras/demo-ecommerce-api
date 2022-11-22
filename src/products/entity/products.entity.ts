@@ -1,4 +1,6 @@
 import { Brand } from 'src/brand/entity/brand.entity';
+import { Category } from 'src/category/entity/category.entity';
+import { Subcategory } from 'src/subcategories/entities/subcategory.entity';
 import {
   Entity,
   Column,
@@ -65,11 +67,11 @@ export class Products {
   @JoinColumn()
   brand: Brand;
 
-  // @ManyToOne(type => Categories)
-  // @JoinColumn()
-  // categories: Categories;
+  @ManyToOne(() => Category, (category) => category.name)
+  @JoinColumn()
+  category: Category;
 
-  // @ManyToOne(type => Subcategories)
-  // @JoinColumn()
-  // subcategories: Subcategories;
+  @ManyToOne(() => Subcategory, (subcategory) => subcategory.name)
+  @JoinColumn()
+  subcategory: Subcategory;
 }

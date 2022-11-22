@@ -13,11 +13,14 @@ export class CategoryService {
   ) {}
 
   getAllCategories() {
-    return this._categoriesService.find();
+    return this._categoriesService.find({
+      relations: ['subcategory', 'products'],
+    });
   }
 
   getCategoriesById(id: number) {
     return this._categoriesService.findOne({
+      relations: ['subcategory', 'products'],
       where: {
         id,
       },

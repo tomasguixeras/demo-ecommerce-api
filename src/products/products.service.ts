@@ -14,13 +14,13 @@ export class ProductsService {
 
   getAllProducts() {
     return this._productsService.find({
-      relations: ['brand'],
+      relations: ['brand', 'subcategory', 'category'],
     });
   }
 
   getProductById(id: number) {
     return this._productsService.findOne({
-      relations: ['brand'],
+      relations: ['brand', 'subcategory', 'category'],
       where: {
         id,
       },
