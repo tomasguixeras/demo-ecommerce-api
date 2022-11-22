@@ -9,6 +9,7 @@ import { ProductsModule } from './products/products.module';
 import { CategoryModule } from './category/category.module';
 
 import * as dotenv from 'dotenv';
+import { SubcategoriesModule } from './subcategories/subcategories.module';
 dotenv.config();
 
 const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME } = process.env;
@@ -29,6 +30,7 @@ const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME } = process.env;
     ProductsModule,
     BrandModule,
     CategoryModule,
+    SubcategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
