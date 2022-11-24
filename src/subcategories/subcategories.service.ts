@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { CategoryService } from 'src/category/category.service';
+import { ProductsService } from 'src/products/products.service';
+import { In, Repository } from 'typeorm';
 import { CreateSubcategoryDto } from './dto/create-subcategory.dto';
 import { Subcategory } from './entities/subcategory.entity';
 
@@ -9,6 +11,7 @@ export class SubcategoriesService {
   constructor(
     @InjectRepository(Subcategory)
     private _subcategoriesRepository: Repository<Subcategory>,
+    private _productsService: ProductsService, // private _categoriesService: CategoryService,
   ) {}
 
   getAllSubcategories() {
@@ -25,8 +28,28 @@ export class SubcategoriesService {
       },
     });
   }
-  createSubcategory(subcategory: CreateSubcategoryDto) {
+
+  getSubcategoriesById(id: Subcategory[]) {
+    return this._subcategoriesRepository.find({
+      relations: ['category', 'products'],
+      where: {
+        id: In([...id]),
+      },
+    });
+  }
+
+  async createSubcategory(subcategory: CreateSubcategoryDto) {
+    const products = await this._productsService.getProductsById(
+      subcategory.products,
+    );
+    // const category = await this._categoriesService.getCategoryById(
+    //   subcategory.category,
+    // );
+    if (!products) new HttpException('Product not found', HttpStatus.NOT_FOUND);
+    // if (!category)
+    //   new HttpException('Subcategory not found', HttpStatus.NOT_FOUND);
     const newSubcategory = this._subcategoriesRepository.create(subcategory);
+    products.map((product) => newSubcategory.products.push(product));
     return this._subcategoriesRepository.save(newSubcategory);
   }
 

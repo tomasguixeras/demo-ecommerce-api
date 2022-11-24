@@ -1,4 +1,4 @@
-import { ParamInterface } from './interface/param.interface';
+import { ParamInterface } from '../../interface/param.interface';
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CategoryInterface } from './interface/category.interface';
@@ -13,20 +13,17 @@ export class CategoryController {
   }
 
   @Get(':id')
-  getCategoriesById(@Param() paramId: ParamInterface) {
+  getCategoriesById(@Param() paramId: any) {
     return this._categoryService.getCategoriesById(paramId.id);
   }
 
   @Post()
-  createProduct(@Body() category: CategoryInterface) {
+  createProduct(@Body() category: any) {
     return this._categoryService.createCategory(category);
   }
 
   @Patch(':id')
-  updateProduct(
-    @Param() paramId: ParamInterface,
-    @Body() dataCategory: CategoryInterface,
-  ) {
+  updateProduct(@Param() paramId: any, @Body() dataCategory: any) {
     return this._categoryService.updateCategory(paramId.id, dataCategory);
   }
 }
