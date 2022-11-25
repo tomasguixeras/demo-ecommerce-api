@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BrandService } from 'src/brand/brand.service';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Products } from './entity/products.entity';
 
@@ -23,6 +23,15 @@ export class ProductsService {
       relations: ['brand', 'subcategory', 'category'],
       where: {
         id,
+      },
+    });
+  }
+
+  getProductsById(id: Products[]) {
+    return this._productsService.find({
+      relations: ['brand', 'subcategory', 'category'],
+      where: {
+        id: In([...id]),
       },
     });
   }

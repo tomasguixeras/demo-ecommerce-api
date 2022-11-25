@@ -13,8 +13,8 @@ export class ProductsController {
   }
 
   @Get(':id')
-  getProductById(id: any) {
-    return this._productService.getProductById(id);
+  getProductById(@Param() param: any) {
+    return this._productService.getProductById(param.id);
   }
 
   @Post()
