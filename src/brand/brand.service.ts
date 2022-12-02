@@ -1,14 +1,17 @@
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { Brand } from './entity/brand.entity';
 import { CreateBrandDto } from './dto/create-brand.dto';
+import { Products } from 'src/products/entity/products.entity';
 
 @Injectable()
 export class BrandService {
   constructor(
     @InjectRepository(Brand) private _brandRepository: Repository<Brand>,
+    @InjectRepository(Products)
+    private _productsRepository: Repository<Products>,
   ) {}
 
   getAllBrands() {
@@ -26,18 +29,44 @@ export class BrandService {
     });
   }
 
-  createBrand(brand: CreateBrandDto) {
-    const newBrand = this._brandRepository.create(brand);
+  async createBrand(brand: CreateBrandDto) {
+    const products = await this._productsRepository.find({
+      relations: ['brand', 'subcategory', 'category'],
+      where: {
+        id: In([...brand.products]),
+      },
+    });
+    if (products.length !== brand.products.length)
+      return new HttpException('Product not found', HttpStatus.NOT_FOUND);
+    const newBrand = this._brandRepository.create({
+      name: brand.name,
+      products: products,
+    });
     return this._brandRepository.save(newBrand);
   }
 
   async updateBrand(id: number, brand: CreateBrandDto) {
-    const brandExists = await this.getBrandByID(id);
-
-    if (brandExists) {
-      return this._brandRepository.update(id, brand);
-    } else {
+    const brandToUpdate = await this.getBrandByID(id);
+    let productsOfBrand;
+    if (!brandToUpdate) {
       return new HttpException('Brand not found', HttpStatus.NOT_FOUND);
     }
+    if (brand.products) {
+      productsOfBrand = await this._productsRepository.find({
+        relations: ['brand', 'subcategory', 'category'],
+        where: {
+          id: In([...brand.products]),
+        },
+      });
+      if (productsOfBrand.length !== brand.products.length)
+        return new HttpException('Product not found', HttpStatus.NOT_FOUND);
+    }
+    Object.assign(brandToUpdate, {
+      name: brand.name && brand.name,
+      image: brand.image && brand.image,
+      status: brand.status && brand.status,
+      products: brand.products && productsOfBrand,
+    });
+    this._brandRepository.save(brandToUpdate);
   }
 }
