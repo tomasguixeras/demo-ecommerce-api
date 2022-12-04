@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BrandService } from 'src/brand/brand.service';
+import { Brand } from 'src/brand/entity/brand.entity';
 import { In, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Products } from './entity/products.entity';
@@ -9,7 +9,7 @@ import { Products } from './entity/products.entity';
 export class ProductsService {
   constructor(
     @InjectRepository(Products) private _productsService: Repository<Products>,
-    private _brandService: BrandService,
+    @InjectRepository(Brand) private _brandService: Repository<Brand>,
   ) {}
 
   getAllProducts() {
@@ -37,7 +37,12 @@ export class ProductsService {
   }
 
   createProduct(product: CreateProductDto) {
-    const productBrand = this._brandService.getBrandByID(product.brandId);
+    const productBrand = this._brandService.findOne({
+      relations: ['products'],
+      where: {
+        id: product.brandId,
+      },
+    });
     if (!productBrand)
       new HttpException('Brand not found', HttpStatus.NOT_FOUND);
     const newProduct = this._productsService.create(product);
