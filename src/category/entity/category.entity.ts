@@ -1,12 +1,8 @@
-import { Products } from 'src/products/entity/products.entity';
-import { Subcategory } from 'src/subcategories/entities/subcategory.entity';
 import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  OneToMany,
-  JoinColumn,
 } from 'typeorm';
 
 export enum CategoryStatus {
@@ -41,12 +37,4 @@ export class Category {
 
   @CreateDateColumn()
   createdAt: Date;
-
-  @OneToMany(() => Products, (products) => products.category)
-  @JoinColumn()
-  products: Products[];
-
-  @OneToMany(() => Subcategory, (subcategory) => subcategory.category)
-  @JoinColumn()
-  subcategory: Subcategory[];
 }
