@@ -1,8 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CategoryService } from 'src/category/category.service';
-import { ProductsService } from 'src/products/products.service';
-import { In, Repository } from 'typeorm';
+import { Category } from 'src/category/entity/category.entity';
+import { Repository } from 'typeorm';
 import { CreateSubcategoryDto } from './dto/create-subcategory.dto';
 import { Subcategory } from './entities/subcategory.entity';
 
@@ -11,57 +10,55 @@ export class SubcategoriesService {
   constructor(
     @InjectRepository(Subcategory)
     private _subcategoriesRepository: Repository<Subcategory>,
-    private _productsService: ProductsService, // private _categoriesService: CategoryService,
+    @InjectRepository(Category)
+    private _categoriesRepository: Repository<Category>,
   ) {}
 
   getAllSubcategories() {
     return this._subcategoriesRepository.find({
-      relations: ['category', 'products'],
+      relations: ['category'],
     });
   }
 
   getSubcategoryById(id: number) {
     return this._subcategoriesRepository.findOne({
-      relations: ['category', 'products'],
+      relations: ['category'],
       where: {
         id,
-      },
-    });
-  }
-
-  getSubcategoriesById(id: Subcategory[]) {
-    return this._subcategoriesRepository.find({
-      relations: ['category', 'products'],
-      where: {
-        id: In([...id]),
       },
     });
   }
 
   async createSubcategory(subcategory: CreateSubcategoryDto) {
-    const products = await this._productsService.getProductsById(
-      subcategory.products,
-    );
-    // const category = await this._categoriesService.getCategoryById(
-    //   subcategory.category,
-    // );
-    if (!products) new HttpException('Product not found', HttpStatus.NOT_FOUND);
-    // if (!category)
-    //   new HttpException('Subcategory not found', HttpStatus.NOT_FOUND);
+    const category = await this._categoriesRepository.findOne({
+      where: {
+        id: subcategory.categoryId,
+      },
+    });
+
+    if (!category)
+      return new HttpException('Category not found', HttpStatus.NOT_FOUND);
+    if (!subcategory.name)
+      return new HttpException('Name is required', HttpStatus.NOT_ACCEPTABLE);
     const newSubcategory = this._subcategoriesRepository.create(subcategory);
-    products.map((product) => newSubcategory.products.push(product));
     return this._subcategoriesRepository.save(newSubcategory);
   }
 
-  updateSubcategory(id: number, SubcategoryData: CreateSubcategoryDto) {
-    const updatedSubcategory = this._subcategoriesRepository.find({
+  async updateSubcategory(id: number, subcategoryData: CreateSubcategoryDto) {
+    const updatedSubcategory = await this._subcategoriesRepository.find({
       where: {
         id,
       },
     });
+
+    if (subcategoryData.categoryId)
+      return new HttpException(
+        'CategoryId in Subcategory update is not acceptable',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
     if (!updatedSubcategory) {
-      return new HttpException('Not found', HttpStatus.NOT_FOUND);
+      return new HttpException('Subcategory not found', HttpStatus.NOT_FOUND);
     }
-    return this._subcategoriesRepository.update(id, SubcategoryData);
+    return this._subcategoriesRepository.update(id, subcategoryData);
   }
 }
