@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CategoryInterface } from './interface/category.interface';
 import { CategoryDto } from './dto/category.dto';
+import { Category } from './entity/category.entity';
 
 @Controller('category')
 export class CategoryController {
@@ -13,8 +13,8 @@ export class CategoryController {
   }
 
   @Get(':id')
-  getCategoriesById(@Param() paramId: CategoryInterface) {
-    return this._categoryService.getCategoryById(paramId.id);
+  getCategoriesById(@Param('id') id: Category['id']) {
+    return this._categoryService.getCategoryById(id);
   }
 
   @Post()
@@ -23,10 +23,7 @@ export class CategoryController {
   }
 
   @Patch(':id')
-  updateProduct(
-    @Param() paramId: CategoryInterface,
-    @Body() dataCategory: any,
-  ) {
-    return this._categoryService.updateCategory(paramId.id, dataCategory);
+  updateProduct(@Param('id') id: Category['id'], @Body() dataCategory: any) {
+    return this._categoryService.updateCategory(id, dataCategory);
   }
 }

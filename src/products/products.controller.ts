@@ -13,8 +13,8 @@ export class ProductsController {
   }
 
   @Get(':id')
-  getProductById(@Param() param: any) {
-    return this._productService.getProductById(param.id);
+  getProductById(@Param('id') id: Products['id']) {
+    return this._productService.getProductById(id);
   }
 
   @Post()
@@ -24,8 +24,8 @@ export class ProductsController {
 
   @Patch(':id')
   updateProduct(
-    @Param() { id }: { id: number },
-    @Body() dataProduct: Products,
+    @Param('id') id: Products['id'],
+    @Body() dataProduct: CreateProductDto,
   ) {
     return this._productService.updateProduct(id, dataProduct);
   }
