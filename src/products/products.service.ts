@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Brand } from 'src/brand/entity/brand.entity';
 import { Category } from 'src/category/entity/category.entity';
 import { Subcategory } from 'src/subcategories/entities/subcategory.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Products } from './entity/products.entity';
 
@@ -32,10 +32,19 @@ export class ProductsService {
     });
   }
 
+  getProductsByIds(ids: number[]) {
+    return this._productsService.find({
+      relations: ['brand', 'subcategory', 'category'],
+      where: {
+        id: In([...ids]),
+      },
+    });
+  }
+
   async createProduct(product: CreateProductDto) {
     const productBrand = await this._brandService.findOne({
       where: {
-        id: product.brandId,
+        id: product.brand,
       },
     });
     if (!productBrand)
@@ -43,7 +52,7 @@ export class ProductsService {
 
     const productCategory = await this._categoryService.findOne({
       where: {
-        id: product.categoryId,
+        id: product.category,
       },
     });
     if (!productCategory)
@@ -52,16 +61,17 @@ export class ProductsService {
     const productSubcategory = await this._subcategoryService.findOne({
       relations: ['category'],
       where: {
-        id: product.subcategoryId,
+        id: product.subcategory,
       },
     });
     if (!productSubcategory)
       return new HttpException('Subcategory not found', HttpStatus.NOT_FOUND);
-    if (productSubcategory.category.id !== product.categoryId)
+    if (productSubcategory.category.id !== product.category) {
       return new HttpException(
         'Subcategory does not belong to the category',
         HttpStatus.NOT_FOUND,
       );
+    }
 
     if (!product.model || !product.price || !product.description)
       return new HttpException(
@@ -84,7 +94,7 @@ export class ProductsService {
 
     const updatedProductCategory = this._categoryService.findOne({
       where: {
-        id: dataProduct.categoryId,
+        id: dataProduct.category,
       },
     });
     if (!updatedProductCategory)
@@ -92,7 +102,7 @@ export class ProductsService {
 
     const updatedProductSubcategory = this._subcategoryService.findOne({
       where: {
-        id: dataProduct.subcategoryId,
+        id: dataProduct.subcategory,
       },
     });
     if (!updatedProductSubcategory)

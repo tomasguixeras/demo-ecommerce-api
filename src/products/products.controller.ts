@@ -12,6 +12,11 @@ export class ProductsController {
     return this._productService.getAllProducts();
   }
 
+  @Get('byids')
+  getProductsByIds(@Body() productsId: { productsId: number[] }) {
+    return this._productService.getProductsByIds(productsId.productsId);
+  }
+
   @Get(':id')
   getProductById(@Param('id') id: Products['id']) {
     return this._productService.getProductById(id);
