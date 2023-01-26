@@ -31,7 +31,7 @@ export class Subcategory {
     nullable: true,
     type: 'varchar',
   })
-  icon: string | null;
+  image: string | null;
 
   @Column({
     type: 'enum',
