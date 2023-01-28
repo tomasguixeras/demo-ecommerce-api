@@ -32,7 +32,7 @@ export class ProductsService {
     });
   }
 
-  getProductsByIds(ids: number[]) {
+  getProductsByIds(ids: any) {
     return this._productsService.find({
       relations: ['brand', 'subcategory', 'category'],
       where: {

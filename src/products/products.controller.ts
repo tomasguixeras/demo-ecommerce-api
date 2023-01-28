@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Products } from './entity/products.entity';
 import { ProductsService } from './products.service';
@@ -11,10 +19,11 @@ export class ProductsController {
   getProducts() {
     return this._productService.getAllProducts();
   }
-
+  // { productsId: number[] }
   @Get('byids')
-  getProductsByIds(@Body() productsId: { productsId: number[] }) {
-    return this._productService.getProductsByIds(productsId.productsId);
+  getProductsByIds(@Query() productsId: { ids: string }) {
+    const arrayIds = JSON.parse(productsId.ids);
+    return this._productService.getProductsByIds(arrayIds);
   }
 
   @Get(':id')
